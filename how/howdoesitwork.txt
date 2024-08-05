@@ -1,0 +1,41 @@
+How does CatOne work?
+
+*CatOne supports relative paths and absolute paths
+*CatOne on its first version can archive up to 255 files
+*CatOne on its first version cannot archive files bigger than 10^9 bytes (1GB)
+
+The CatOne archive layout:
+	A CatOne archive is setup like this:
+		The first 14 are the archive header: "CATONE ARCHIVE" encoded in ASCII, its HEX is: 0x4341544f4e452041524348495645
+		The next byte is the number of files in the archive, it MUST be at least 1 and up to 255, even if 0 is possible in binary
+		Then each file saved in the archive will have a CATONE prefix before its real data like this:
+		"-<index from 1 to 255(1byte)>-<file name (1byte)>-<file size in bytes(10^9bytes max)>"
+		The CATONE prefix will be placed right after the end of the previous file entry in the archive or the header if its the first file
+
+CatOne takes a minimum of 3 arguments that are explained below:
+
+	1-> The input method, the mode you want CatOne to read your input files, it can be: "roll" or "index"
+	2-> The final archive name, the name that the resulting archive will have, it would be great to choose .co as file extension (CatOne)
+	3-> The rest:
+		If ur input method is "roll" the rest of the arguments after the final archive name will be the name of your input files
+		If ur input method is "index" the third and last argument will be the file used as index that must follow an specific format
+
+Index file format:
+	The file must have in its first line the following (without ""): "---CATONE INDEX FILE---"
+	The second line will be: "FILE COUNT:<file count>"
+	Then the file needs to have at least <file count> + 1 more lines
+	Each line after the second one needs to have the following format: "<index>:<file name>"
+	The last line must be: "END OF INDEX FILE"
+	An example of index file could be this file called myindex.co.index
+		---CATONE INDEX FILE---
+		---FILE COUNT: 3 :---
+		1:file1.txt
+		2:/home/user/samplefile
+		3:/root/.bashrc
+		---END OF INDEX FILE---
+
+Examples:
+	catone index myarchive.co myindex.co.index
+	catone roll mysecondarchive.co file1.txt file2.txt file3.txt
+
+The index input method is cleaner and simpler but roll could be easier to use with less files
