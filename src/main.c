@@ -6,12 +6,14 @@
 int *imethod; //Pointer to the input method flag, 1 for roll, 2 for index
 
 void parse_arguments(const int count, char **vector) {
-	imethod = malloc(sizeof(int)); //Allocate pointer
-	if (count < 3) { //Check enough arguments
+	//Check enough arguments
+	if (count < 3) {
 		fprintf(stderr, "Incorrect app usage\nUsage: %s <input method> <archive name> <catone index file or files>\n", vector[0]);
 		free(imethod);
 		exit(EXIT_FAILURE);
 	}
+	//Input method
+	imethod = malloc(sizeof(int)); //Allocate pointer
 	if (strcmp("roll", vector[1]) == 0) { //Check input method
 		*imethod = 1;
 	} else if (strcmp("index", vector[1]) == 0) { //Check input method
