@@ -72,6 +72,19 @@ void parse_arguments(int count, char **vector) {
 			exit(EXIT_FAILURE);
 		}
 	}
+	fprintf(stdout, "You selected <%s> as your input method\nYour archive name will be <%s>\n", vector[1], vector[2]); //Summary
+	if (imethod == 1) { //Roll case summary
+		fprintf(stdout, "Your files:");
+		for (int y = 3; y < count; y++) {
+			fprintf(stdout, "\n<%s>", vector[y]);
+		}
+	} else if (imethod == 2) { //Index case summary
+		fprintf(stdout, "Your index file: <%s>\n", vector[3]);
+	}
+}
+
+void compound_archive() {
+
 }
 
 int main(int argc, char **argv) {
