@@ -55,7 +55,7 @@ void parse_arguments(int count, char **vector) {
 				fclose(final_archive);
 				exit(EXIT_FAILURE);
 			}
-			fprintf(stdout, "File <%s> added for processing\n");
+			fprintf(stdout, "File <%s> added for processing\n", vector[i]);
 		}		
 	} else if (imethod == 2) { //Index case
 		file_array = malloc(sizeof(FILE *)); //Index: define file_array as a pointer to a pointer to a FILE (pointer to FILE *)
