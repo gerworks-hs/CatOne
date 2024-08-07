@@ -3,9 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-int rollCount; //Roll arguments count (number of arguments - first three mandatory arguments), if index method is used then we will use the 4th
 int imethod; //Input method flag, 1 for roll, 2 for index
-char *archive_name; //Pointer to the string with the final archive name
+FILE *final_archive; //Pointer to the final archive FILE
 FILE **file_array; //Array of pointer to FILEs for the last arguments
 
 void parse_arguments(int count, char **vector) {
@@ -31,13 +30,18 @@ void parse_arguments(int count, char **vector) {
 		fprintf(stderr, "Final archive name is too long: <%s>\n", vector[2]);
 		exit(EXIT_FAILURE);
 	} else {
-		archive_name = vector[2]; //Equal global variable to argument
+		final_archive = fopen(vector[2], "wb");
+		if (final_archive == NULL) {
+			fprintf(stderr, "Final archive could not be created\n");
+			exit(EXIT_FAILURE);
+		}
 	}
-	//REST OF THE ARGUMENTS 3 < count
+	//REST OF THE ARGUMENTS 3 < count (Things to close: final_archive)
 	if (imethod == 1) { //Roll case
 		file_array = malloc(sizeof(FILE *) * (count - 3));
 		if (file_array == NULL) {
 			fprintf(stderr, "Fatal error trying to dinamically allocate memory, aborting...\n");
+			fclose(final_archive);
 			exit(EXIT_FAILURE);
 		}
 		for (int i = 3, o = 0; i < count; i++, o++) { //i = 3 to start reading args avoiding the first three (0,1,2)
@@ -48,6 +52,7 @@ void parse_arguments(int count, char **vector) {
 					fclose(file_array[j]); //Free each FILE pointer in file_array
 				}
 				free(file_array);
+				fclose(final_archive);
 				exit(EXIT_FAILURE);
 			}
 			fprintf(stdout, "File <%s> added for processing\n");
@@ -56,11 +61,13 @@ void parse_arguments(int count, char **vector) {
 		file_array = malloc(sizeof(FILE *)); //Index: define file_array as a pointer to a pointer to a FILE (pointer to FILE *)
 		if (file_array == NULL) {
 			fprintf(stderr, "Fatal error trying to dinamically allocate memory, aborting...\n");
+			fclose(final_archive);
 			exit(EXIT_FAILURE);
 		}
 		*file_array = fopen(vector[3], "rb"); //Define the data pointed by file_array pointer as a pointer to a FILE (FILE *)
 		if (*file_array == NULL) { //Check for errors on fopen()
 			fprintf(stderr, "Cannot open the file <%s>\n", vector[3]);
+			fclose(final_archive);
 			free(file_array);
 			exit(EXIT_FAILURE);
 		}
@@ -69,6 +76,7 @@ void parse_arguments(int count, char **vector) {
 
 int main(int argc, char **argv) {
 	parse_arguments(argc, argv);
+	//compound_archive();
 	exit(EXIT_SUCCESS);
 }
 //Made by Gerworks-HS (@itsgerliz)
