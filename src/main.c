@@ -1,5 +1,6 @@
 //Made by Gerworks-HS (@itsgerliz)
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -76,20 +77,27 @@ void parse_arguments(int count, char **vector) {
 	if (imethod == 1) { //Roll case summary
 		fprintf(stdout, "Your files:");
 		for (int y = 3; y < count; y++) {
-			fprintf(stdout, "\n<%s>", vector[y]);
+			fprintf(stdout, "\n<%s>\n", vector[y]);
 		}
 	} else if (imethod == 2) { //Index case summary
 		fprintf(stdout, "Your index file: <%s>\n", vector[3]);
 	}
 }
 
-void compound_archive() {
-
+void compound_archive(const int count) {
+	const char *catone_header = "CATONE_HEADER";
+	uint8_t files_to_archive = count - 3;
+	//Write to final archive the CATONE header
+	///Roll case
+	if (imethod == 1) {
+		fwrite(catone_header, sizeof(char), strlen(catone_header), final_archive); //Write catone header without null terminator
+		fwrite(&files_to_archive, sizeof(uint8_t), 1, final_archive); //Write the number of files to archive righ after header
+	}
 }
 
 int main(int argc, char **argv) {
 	parse_arguments(argc, argv);
-	//compound_archive();
+	compound_archive(argc);
 	//Cleanup before exiting
 	if (imethod == 1) {
 		for (int x = 0; x < (argc - 3); x++) {
