@@ -48,7 +48,7 @@ void parse_arguments(int count, char **vector) {
 			file_array[o] = fopen(vector[i], "rb"); //Define each member of the file array to a pointer to a FILE using the next arg and read binary mode
 			if (file_array[o] == NULL) { //Check for errors on fopen()
 				fprintf(stderr, "Cannot open the file <%s>\n", vector[i]);
-				for (int j = 0; j < (count - 3); j++) {
+				for (int j = 0; j < o; j++) {
 					fclose(file_array[j]); //Free each FILE pointer in file_array
 				}
 				free(file_array);
