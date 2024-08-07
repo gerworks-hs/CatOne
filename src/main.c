@@ -36,7 +36,7 @@ void parse_arguments(int count, char **vector) {
 			exit(EXIT_FAILURE);
 		}
 	}
-	//REST OF THE ARGUMENTS 3 < count (Things to close: final_archive)
+	//REST OF THE ARGUMENTS 3 < count
 	if (imethod == 1) { //Roll case
 		file_array = malloc(sizeof(FILE *) * (count - 3));
 		if (file_array == NULL) {
@@ -77,6 +77,16 @@ void parse_arguments(int count, char **vector) {
 int main(int argc, char **argv) {
 	parse_arguments(argc, argv);
 	//compound_archive();
+	//Cleanup before exiting
+	if (imethod == 1) {
+		for (int x = 0; x < (argc - 3); x++) {
+			fclose(file_array[x]);
+		}
+	} else if (imethod == 2) {
+		fclose(*file_array);
+	}
+	fclose(final_archive);
+	free(file_array);
 	exit(EXIT_SUCCESS);
 }
 //Made by Gerworks-HS (@itsgerliz)
