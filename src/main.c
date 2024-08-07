@@ -10,14 +10,17 @@ FILE **file_array; //Array of pointer to FILEs for the last arguments
 
 void parse_arguments(int count, char **vector) {
 	//CHECK FOR CORRECT USAGE
-	if (count < 4) { //Check if the user used at least 4 arguments
+	if (count < 4) { //Check if the user used at leas t 4 arguments
 		fprintf(stderr, "Incorrect app usage\nUsage: %s <input method> <archive name> <catone index file or files>\n", vector[0]);
+		exit(EXIT_FAILURE);
+	} else if (count > 258) {
+		fprintf(stderr, "Too many arguments, max is 258\n");
 		exit(EXIT_FAILURE);
 	}
 	//PARSE INPUT METHOD
-	if (strcmp("roll", vector[1]) == 0) { //Check input method
+	if (strcmp("roll", vector[1]) == 0) {
 		imethod = 1;
-	} else if (strcmp("index", vector[1]) == 0) { //Check input method
+	} else if (strcmp("index", vector[1]) == 0) {
 		imethod = 2;
 	} else {
 		fprintf(stderr, "Not a valid input method\n");
@@ -32,7 +35,7 @@ void parse_arguments(int count, char **vector) {
 	}
 	//REST OF THE ARGUMENTS 3 < count
 	if (imethod == 1) { //Roll case
-		file_array = malloc(sizeof(FILE *) * (count - 3)); //Roll: define file_array as an arrray of pointers to FILEs long as argc - 3 initial args
+		file_array = malloc(sizeof(FILE *) * (count - 3));
 		if (file_array == NULL) {
 			fprintf(stderr, "Fatal error trying to dinamically allocate memory, aborting...\n");
 			exit(EXIT_FAILURE);
@@ -41,8 +44,8 @@ void parse_arguments(int count, char **vector) {
 			file_array[o] = fopen(vector[i], "rb"); //Define each member of the file array to a pointer to a FILE using the next arg and read binary mode
 			if (file_array[o] == NULL) { //Check for errors on fopen()
 				fprintf(stderr, "Cannot open the file <%s>\n", vector[i]);
-				for (int i = 0; i < (count - 3); i++) {
-					fclose(file_array[i]); //Free each FILE pointer in file_array
+				for (int j = 0; j < (count - 3); j++) {
+					fclose(file_array[j]); //Free each FILE pointer in file_array
 				}
 				free(file_array);
 				exit(EXIT_FAILURE);
@@ -58,7 +61,6 @@ void parse_arguments(int count, char **vector) {
 		*file_array = fopen(vector[3], "rb"); //Define the data pointed by file_array pointer as a pointer to a FILE (FILE *)
 		if (*file_array == NULL) { //Check for errors on fopen()
 			fprintf(stderr, "Cannot open the file <%s>\n", vector[3]);
-			fclose(*file_array);
 			free(file_array);
 			exit(EXIT_FAILURE);
 		}
