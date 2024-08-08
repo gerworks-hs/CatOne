@@ -85,7 +85,7 @@ void parse_arguments(int count, char **vector) {
 }
 
 void compound_archive(const int count) {
-	const char *catone_header = "CATONE_HEADER";
+	const char *catone_header = "CATONE_ARCHIVE";
 	uint8_t files_to_archive = count - 3;
 	//Write to final archive the CATONE header
 	///Roll case

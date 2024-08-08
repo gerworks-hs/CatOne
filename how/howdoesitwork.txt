@@ -6,7 +6,7 @@ How does CatOne work?
 
 The CatOne archive layout:
 	A CatOne archive is setup like this:
-		The first 14 are the archive header: "CATONE ARCHIVE" encoded in ASCII, its HEX is: 0x4341544f4e452041524348495645
+		The first 14 are the archive header: "CATONE_ARCHIVE" encoded in ASCII, its HEX is: 0x4341544f4e452041524348495645
 		The next byte is the number of files in the archive, it MUST be at least 1 and up to 255, even if 0 is possible in binary
 		Then each file saved in the archive will have a CATONE prefix before its real data like this:
 		"-<index from 1 to 255(1byte)>-<file name (255byte)>-<file size in bytes(10^9bytes max)>"
