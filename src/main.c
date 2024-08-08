@@ -84,6 +84,20 @@ void parse_arguments(int count, char **vector) {
 	}
 }
 
+void archive_file(const FILE *src, const FILE *dest) {
+	char buffer[1000];
+	int bytesRead;
+	while (1) {
+		memset(buffer, 0, sizeof(buffer));
+		if ((bytesRead = fread(buffer, sizeof(char), sizeof(buffer), (FILE * restrict)src)) > 0) {
+			fwrite(buffer, sizeof(char), bytesRead, (FILE * restrict)dest);
+		} else {
+			break;
+		}
+	}
+	fprintf(stdout, "File archived\n");
+}
+
 void compound_archive(const int count) {
 	const char *catone_header = "CATONE_ARCHIVE";
 	uint8_t files_to_archive = count - 3;
@@ -92,6 +106,10 @@ void compound_archive(const int count) {
 	if (imethod == 1) {
 		fwrite(catone_header, sizeof(char), strlen(catone_header), final_archive); //Write catone header without null terminator
 		fwrite(&files_to_archive, sizeof(uint8_t), 1, final_archive); //Write the number of files to archive righ after header
+		for (int g = 0; g < (count - 3); g++) {
+			archive_file(file_array[g], final_archive);
+		}
+		fprintf(stdout, "ALl archived\n");
 	}
 }
 
